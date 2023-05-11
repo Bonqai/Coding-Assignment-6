@@ -2,59 +2,103 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
-func room1() {
-	// You can go to room 2
+type room struct {
+	name string
+	description string
+	exits map[string]*room
 }
-
-func room2() {
-	// You can go to room 3, 4, 7
-}
-
-func room3() {
-	// You fight a skeleton wielding an axe and a flail
-	// Once defeating the skeleton, there is a chest you can loot that contains a lockpick and a longsword
-	// You can go to room 8, or through a trapdoor into a secret room
-	// If you go to room 8, you can also go to room 5 through the hallway
-}
-
-func room4() {
-	// You fight a goblin wielding a one handed sword and no shield
-	// You can go to room 6, room 10, and room 10 if you go to room 10 you can room 9 as well through the hallway
-}
-
-func room5() {
-	// You fight a godlin holding a two handed staff
-	// You can either head into room 7, or the hallway towards room 3 or 8.
-	// There is a locked chest in the room as well, in which you need a lockpick to open
-}
-
-func room6() {
-	// There is a goblin holding a one handed sword and armor
-	// There is one unlocked chest in the room with a better shield and 2 health potions
-	// Room 6 is a room secluded, and can only go back to room 4.
-}
-
-func room7() {
-	// Room seven is a safe room with no enemies
-	// It contains a cupboard in the corner with 1 health potion
-	// It leads to room 5 to the west and room 2 to the north.
-}
-
-func room8() {
-	// Room 8 is a safe room with a bed
-	// Leads to room 13 to the east and room 3 to the north
-}
-
-func room9() {
-	// Room 9 is a trap room containing a chest and a lit campfire
-}
-
-func room10() {
-	// Room 10 
+func rollRandNum(chance int) int {
+	rand.NewSource(time.Now().UnixNano())
+	randNum := rand.Intn(chance)
+	return randNum
 }
 
 func main() {
 	fmt.Println("Go!")
+
+// Setting up each room for the game loop
+	room1 := &room{
+		name: "Room 1",
+		description: "",
+		exits: map[string]*room{"north": nil, "east": nil, "south": room2, "west": nil},
+	}
+	room2 := &room{
+		name: "Room 2",
+		description: "",
+		exits: map[string]*room{"north", room1, "east": room4, "south": room7, "west": room3},
+	}
+	room3 := &room{
+		name: "Room 3",
+		description: "",
+		exits: map[string]*room{"north": nil, "east": room2, "south": hallway1, "west": nil, "sideroom": room3SideRoom},
+	}
+	room4 := &room{
+		name: "Room 4",
+		description: "",
+		exits: map[string]*room{"north": nil, "east": nil, "south": hallway2, "west": room2, "sideroom": room6},
+	}
+	room5 := &room{
+		name: "Room 5",
+		description: "",
+		exits: map[string]*room{"north": nil, "east": room7, "south": nil, "west": hallway1},
+	}
+	room6 := &room{
+		name: "Room 6",
+		description: "",
+		exits: map[string]*room{"north": room4, "east": nil, "south": nil, "west": nil},
+	}
+	room7 := &room{
+		name: "Room 7",
+		description: "",
+		exits: map[string]*room{"north": room2, "east": nil, "south": nil, "west": room5},
+	}
+	room8 := &room{
+		name: "Room 8"
+		description: "",
+		exits: map[string]*room{"north": hallway1, "east": room13, "south": nil, "west": nil},
+	}
+	room9 := &room{
+		name: "Room 9"
+		description: "",
+		exits: map[string]*room{"north": nil, "east": nil, "south": nil, "west": hallway2},
+	}
+	room10 := &room{
+		name: "Room 10"
+		description: "",
+		exits: map[string]*room{"north": hallway2, "east": nil, "south": nil, "west": room12},
+	}
+	room11 := &room{
+		name: "Room 11"
+		description: "",
+		exits: map[string]*room{"north": nil, "east": room12, "south": nil, "west": room13},
+	}
+	room12 := &room{
+		name: "Room 12"
+		description: "",
+		exits: map[string]*room{"north": nil, "east": room10, "south": nil, "west": room11},
+	}
+	room13 := &room{
+		name: "Room 13"
+		description: "",
+		exits: map[string]*room{"north": nil, "east": room11, "south": nil, "west": room8},
+	}
+	hallway1 := &room{
+		name: "Hallway 1"
+		description: "",
+		exits: map[string]*room{"north": room3, "east": room5, "south": room8, "west": nil},
+	}
+	hallway2 := &room{
+		name: "Hallway 2"
+		description: "",
+		exits: map[string]*room{"north": room4, "east": room9, "south": room10, "west": nil},
+	}
+	room3SideRoom := &room{
+		name: "Room 3 Side Room",
+		description: "",
+		exits: map[string]*room{"north": nil, "east": nil, "south": nil, "west": room3}
+	}
 }
