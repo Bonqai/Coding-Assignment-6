@@ -9,96 +9,99 @@ import (
 type room struct {
 	name string
 	description string
-	exits map[string]*room
+	options string
+	north *room
+	east *room
+	south *room
+	west *room
+	xtraRoom *room
 }
+
+func (r *room) move(direction rune) *room {
+	switch direction {
+	case 'N', 'n':
+		return r.north
+	case 'E', 'e':
+		return r.east
+	case 'S', 's':
+		return r.south
+	case 'W', 'w':
+		return r.west
+	default:
+		fmt.Println("I'm sorry, please try another direction.")	
+		return r
+	}
+}
+
+func currentOptions(r *room) {
+	fmt.Println("----------------------------------------------")
+	fmt.Println("You are currently in: ", r.name)
+	fmt.Println("")
+}
+
 func rollRandNum(chance int) int {
 	rand.NewSource(time.Now().UnixNano())
 	randNum := rand.Intn(chance)
 	return randNum
 }
-
 func main() {
-	fmt.Println("Go!")
 
-// Setting up each room for the game loop
-	room1 := &room{
-		name: "Room 1",
-		description: "",
-		exits: map[string]*room{"north": nil, "east": nil, "south": room2, "west": nil},
-	}
-	room2 := &room{
-		name: "Room 2",
-		description: "",
-		exits: map[string]*room{"north", room1, "east": room4, "south": room7, "west": room3},
-	}
-	room3 := &room{
-		name: "Room 3",
-		description: "",
-		exits: map[string]*room{"north": nil, "east": room2, "south": hallway1, "west": nil, "sideroom": room3SideRoom},
-	}
-	room4 := &room{
-		name: "Room 4",
-		description: "",
-		exits: map[string]*room{"north": nil, "east": nil, "south": hallway2, "west": room2, "sideroom": room6},
-	}
-	room5 := &room{
-		name: "Room 5",
-		description: "",
-		exits: map[string]*room{"north": nil, "east": room7, "south": nil, "west": hallway1},
-	}
-	room6 := &room{
-		name: "Room 6",
-		description: "",
-		exits: map[string]*room{"north": room4, "east": nil, "south": nil, "west": nil},
-	}
-	room7 := &room{
-		name: "Room 7",
-		description: "",
-		exits: map[string]*room{"north": room2, "east": nil, "south": nil, "west": room5},
-	}
-	room8 := &room{
-		name: "Room 8"
-		description: "",
-		exits: map[string]*room{"north": hallway1, "east": room13, "south": nil, "west": nil},
-	}
-	room9 := &room{
-		name: "Room 9"
-		description: "",
-		exits: map[string]*room{"north": nil, "east": nil, "south": nil, "west": hallway2},
-	}
-	room10 := &room{
-		name: "Room 10"
-		description: "",
-		exits: map[string]*room{"north": hallway2, "east": nil, "south": nil, "west": room12},
-	}
-	room11 := &room{
-		name: "Room 11"
-		description: "",
-		exits: map[string]*room{"north": nil, "east": room12, "south": nil, "west": room13},
-	}
-	room12 := &room{
-		name: "Room 12"
-		description: "",
-		exits: map[string]*room{"north": nil, "east": room10, "south": nil, "west": room11},
-	}
-	room13 := &room{
-		name: "Room 13"
-		description: "",
-		exits: map[string]*room{"north": nil, "east": room11, "south": nil, "west": room8},
-	}
-	hallway1 := &room{
-		name: "Hallway 1"
-		description: "",
-		exits: map[string]*room{"north": room3, "east": room5, "south": room8, "west": nil},
-	}
-	hallway2 := &room{
-		name: "Hallway 2"
-		description: "",
-		exits: map[string]*room{"north": room4, "east": room9, "south": room10, "west": nil},
-	}
-	room3SideRoom := &room{
-		name: "Room 3 Side Room",
-		description: "",
-		exits: map[string]*room{"north": nil, "east": nil, "south": nil, "west": room3}
-	}
+	// Initializing each of the rooms 
+	r1 := &room {name: "Room 1", description: ""}
+	r2 := &room {name: "Room 2", description: ""}
+	r3 := &room {name: "Room 3", description: ""}
+	r4 := &room {name: "Room 4", description: ""}
+	r5 := &room {name: "Room 5", description: ""}
+	r6 := &room {name: "Room 6", description: ""}
+	r7 := &room {name: "Room 7", description: ""}
+	r8 := &room {name: "Room 8", description: ""}
+	r9 := &room {name: "Room 9", description: ""}
+	r10 := &room {name: "Room 10", description: ""}
+	r11 := &room {name: "Room 11", description: ""}
+	r12 := &room {name: "Room 12", description: ""}
+	r13 := &room {name: "Room 13", description: ""}
+	h1 := &room {name: "Hallway 1", description: ""}
+	h2 := &room {name: "Hallway 2", description: ""}
+	r3sr := &room {name: "Room 3 Side Room", description: ""}
+
+	// Initiate all possible movement options based on the map
+	r1.south = r2
+	r2.north = r1
+	r2.east = r4
+	r2.south = r7
+	r2.west = r3
+	r3.east = r2
+	r3.south = h1
+	r3.xtraRoom = r3sr
+	r4.south = h2
+	r4.west = r2
+	r4.xtraRoom = r6 
+	r5.east = r7
+	r5.west = h1
+	r6.north = r4
+	r7.north = r2
+	r7.west = r5
+	r8.north = h1
+	r8.east = r13
+	r9.west = h2
+	r10.north = h2
+	r10.west = r12
+	r11.east = r12
+	r11.west = r13
+	r12.east = r10
+	r12.west = r11
+	r13.east = r11
+	r13.west = r8
+	h1.north = r3
+	h1.east = r5
+	h1.south = r8
+	h2.north = r4
+	h2.east = r9
+	h2.south = r10
+	r3sr.west = r3
+
+	// Create the current room placeholder variable
+	currentRoom := r1
+
+	
 }
