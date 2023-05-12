@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
+	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -15,6 +18,18 @@ type room struct {
 	south *room
 	west *room
 	xtraRoom *room
+}
+
+func ClearScreen() {
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/c", "cls")
+
+	} else {
+		cmd = exec.Command("clear")
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
 
 func (r *room) move(direction rune) *room {
@@ -36,7 +51,24 @@ func (r *room) move(direction rune) *room {
 func currentOptions(r *room) {
 	fmt.Println("----------------------------------------------")
 	fmt.Println("You are currently in: ", r.name)
-	fmt.Println("")
+	fmt.Println(r.options)
+
+	if r.north != nil {
+		fmt.Println("(N) - North")
+	} 
+	
+	if r.east != nil {
+		fmt.Println("(E) - East")
+	} 
+
+	if r.south != nil {
+		fmt.Println("(S) - South")
+	} 
+
+	if r.west != nil {
+		fmt.Println("(W) - West")
+	}
+	fmt.Println("----------------------------------------------")
 }
 
 func rollRandNum(chance int) int {
@@ -44,7 +76,9 @@ func rollRandNum(chance int) int {
 	randNum := rand.Intn(chance)
 	return randNum
 }
-func main() {
+
+func gameLoop() {
+	reader := NewCinReader()
 
 	// Initializing each of the rooms 
 	r1 := &room {name: "Room 1", description: ""}
@@ -102,6 +136,25 @@ func main() {
 
 	// Create the current room placeholder variable
 	currentRoom := r1
+	gameEnd := false
 
+// Variables ^^^ ----------------------------------------------------------------------------------------
+
+for !gameEnd {
+	ClearScreen()
+	currentOptions(currentRoom)
+
+	fmt.Println("Which direction would you like to move?")
+	directionMoved := reader.ReadCharacterSet([]rune("NnEeSsWw"))
+	currentRoom = currentRoom.move(directionMoved)
+
+	if currentRoom == r11 {
+		fmt.Println("You won!")
+		gameEnd = true
 	
+	}
+	}
+}
+func main() {
+	gameLoop()
 }
